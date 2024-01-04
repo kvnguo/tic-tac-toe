@@ -3,3 +3,11 @@
     margin: 0;
     padding: 0;
 }
+
+:root {
+    --yellow: #EDC339;
+    --light-cyan: #227AA1;
+    --cyan: #01577D;
+    --grey: #D1C6BE;
+    --dark-grey: #544F53;
+}

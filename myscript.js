@@ -1,5 +1,6 @@
 const Game = (() => {
-    let currentPlayer = 'x'
+    // Game data
+    let currentPlayer = 'x';
     let board = ['', '', '',
                  '', '', '',
                  '', '', '']
@@ -16,6 +17,18 @@ const Game = (() => {
         [[0, 4], [2, 5], [6, 7]]    // Index 8
     ]
 
+    // Cache DOM
+    const startPage = document.getElementById('startPage')
+    const startGameBtn = document.getElementById('startGameBtn')
+    const playerXInput = document.getElementById('player-x')
+    
+
+    // Bind events
+    startGameBtn.addEventListener('click', startGame)
+
+    // Show the dialog when the script is executed
+    startPage.showModal()
+
     function markPosition(index) {
         if(board[index] === '') {
             board[index] = currentPlayer;  
@@ -28,7 +41,7 @@ const Game = (() => {
         if(checkWinner(index)) {
             console.log(`${currentPlayer} wins`)
         }
-        else if(checkdraw()){
+        else if(checkDraw()){
             console.log('Draw')
         } 
         currentPlayer = currentPlayer === 'x' ? 'o' : 'x';
@@ -41,8 +54,14 @@ const Game = (() => {
         ); 
     }
 
-    function checkdraw() {
+    function checkDraw() {
         return board.every((i) => i != '')
+    }
+
+    function startGame() {
+        startPage.close(); 
+        currentPlayer = playerXInput.cheched? 'x' : 'o'
+        console.log(`player one chose ${currentPlayer}`)
     }
 
     return {
