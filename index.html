@@ -9,19 +9,23 @@
 </head>
 <body>
     <dialog id="startPage">
-            <H2>Tic Tac Toe</H2>
-            <div>
-                <p>PICK PLAYER ONE'S SIGN</p>
-                <label for="player-x">
-                    <input type="radio" name="player" id="player-x" checked>
-                    <div class="sle">x</div>
-                </label>
-                <label for="player-o">
-                    <input type="radio" name="player" id="player-o">
-                    <div class="sle">o</div>
-                </label>
+            <div id="startPageContainer">
+                <div id="titleContainer">
+                    <H2>TIC TAC TOE</H2>
+                </div>
+                <div id="chooseContainer">
+                    <div>PICK PLAYER ONE'S SIGN</div>
+                    <label for="player-x">
+                        <input type="radio" name="player" id="player-x" checked>
+                        <div class="selectBtn" id="button-x">x</div>
+                    </label>
+                    <label for="player-o">
+                        <input type="radio" name="player" id="player-o">
+                        <div class="selectBtn" id="button-y">o</div>
+                    </label>
+                </div>
+                <button id="startGameBtn">START GAME</button>
             </div>
-            <button id="startGameBtn">START GAME</button>
     </dialog>
 </body>
 </html>
