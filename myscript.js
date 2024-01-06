@@ -4,7 +4,7 @@ const Game = (() => {
     let board = ['', '', '',
                  '', '', '',
                  '', '', '']
-    
+    // Indexes to check             
     const toCheck = [
         [[1, 2], [3, 6], [4, 8]],   // Index 0
         [[0, 2], [4, 7]],           // Index 1

@@ -8,6 +8,7 @@
     <script src="myscript.js" defer></script>
 </head>
 <body>
+    <!-- Player Selection -->
     <dialog id="startPage">
             <div id="startPageContainer">
                 <div id="titleContainer">
@@ -21,11 +22,24 @@
                     </label>
                     <label for="player-o">
                         <input type="radio" name="player" id="player-o">
-                        <div class="selectBtn" id="button-y">o</div>
+                        <div class="selectBtn" id="button-o">o</div>
                     </label>
                 </div>
                 <button id="startGameBtn">START GAME</button>
             </div>
     </dialog>
+
+    <!-- Game Board -->
+    <div id="gameBoard">
+        <div class="cell x">x</div>
+        <div class="cell o">o</div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+    </div>
 </body>
 </html>
