@@ -54,11 +54,11 @@ table {
 
 :root {
     --yellow: #EDC339;
-    --light-yellow: #f5d057;
+    --dark-yellow: #dab436;
     --light-cyan: #227AA1;
     --cyan: #01577D;
     --grey: #D1C6BE;
-    --dark-grey: #544F53;
+    --dark-grey: #bbbbbb;
     --black: #282727d6;
 }
 
@@ -133,7 +133,7 @@ html {
 
 }
 
-/* Player choie buttons */
+/* Player choice buttons */
 #chooseContainer > label {
     grid-row: 2 / 3;
     width: 100%;
@@ -178,28 +178,35 @@ html {
 }
 
 
-/* Start game button */
-#startGameBtn {
+/* Buttons */
+.button {
     justify-self: center;
     align-self: center;
-    width: 60%;
-    height: 60%;
     border-radius: 10px;
-    font-size: 3vmin;
-    background-color: var(--yellow);
     border: none;
     box-shadow: 2px 2px 5px 2px var(--black);
 }
 
-#startGameBtn:hover {
+button:hover {
     cursor: pointer;
     transform: scale(1.01);
 }
 
-#startGameBtn:active {
+button:active {
     transform: scale(0.98); 
-    background-color: var(--light-yellow);
     box-shadow: 1px 1px 3px 1px var(--black); 
+}
+
+/* Start game button */
+#startGameBtn {
+    width: 60%;
+    height: 60%;
+    font-size: 3vmin;
+    background-color: var(--yellow);
+}
+
+#startGameBtn:active {
+    background-color: var(--dark-yellow);
 }
 
 /* Game Board */
@@ -228,17 +235,70 @@ html {
     padding: 0% 6% 12% 6%; 
 }
 
-
-
 .cell.x,
 .cell.o {
     color: var(--grey);
     cursor: not-allowed;
 }
 
+/* End Screen */
+#endScreen {
+    width: 100%;
+    height: 15%;
+    border: none;
+    background-color: var(--light-cyan);
+    box-shadow: 5px 5px 10px 5px var(--black);
+}
 
+#endScreen::backdrop {
+    backdrop-filter: blur(5px); 
+}
 
+#endScreenContainer {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
+    justify-content: center;
+}
 
+#roundOutcome {
+    text-align: center;
+    align-self: center;
+    grid-column: 1 / 3;
+    font-size: 5vmin;
+    text-shadow: 1px 1px 2px var(--black);
+}
+
+#roundOutcome > span {
+    font-size: 6.5vmin;
+}
+
+#quitBtn,
+#playAgainBtn {
+    font-size: 2vmin;
+    width: 90%;
+    padding: 2vmin 1vmin;
+}
+
+#quitBtn {
+    background-color: var(--grey);
+}
+
+#quitBtn:active {
+    background-color: var(--dark-grey);
+}
+
+#playAgainBtn {
+    background-color: var(--yellow);
+}
+
+#playAgainBtn:active {
+    background-color: var(--dark-yellow);
+}
+
+ 
 
 
 
