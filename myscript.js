@@ -5,24 +5,18 @@ const TicTacToe = (() => {
     const PLAYER_O = 'o';
     const EMPTY_CELL = '';
     
-    // Initialize game state
-    let currentPlayer = PLAYER_X;  // Start with Player X
-    let board = Array(9).fill(EMPTY_CELL);  // Initialize an empty board of size 9
+    // Initialize Game State
+    let currentPlayer = PLAYER_X;
+    let board = Array(9).fill(EMPTY_CELL);
     
-    // Define winning patterns 
-    const toCheck = [
-        [[1, 2], [3, 6], [4, 8]],  
-        [[0, 2], [4, 7]],          
-        [[0, 1], [5, 8], [4, 6]],  
-        [[0, 6], [4, 5]],          
-        [[0, 8], [1, 7], [2, 6], [3, 5]],  
-        [[2, 8], [3, 4]],          
-        [[0, 3], [7, 8], [2, 4]],  
-        [[1, 4], [6, 8]],          
-        [[0, 4], [2, 5], [6, 7]]   
+    // Define Winning Combos
+    const WINNING_COMBINATIONS = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+        [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+        [0, 4, 8], [2, 4, 6]             // Diagonals
     ];
     
-    // DOM caching 
+    // Cache DOM 
     const startPage = document.getElementById('startPage');
     const endScreen = document.getElementById('endScreen');
     const startGameBtn = document.getElementById('startGameBtn');
@@ -32,47 +26,48 @@ const TicTacToe = (() => {
     const cells = document.querySelectorAll('.cell');
     const roundOutcome = document.getElementById('roundOutcome');
     const spanElement = document.createElement('span');
-    
-    // Initialize the game
-    init(); 
 
-    function init(firstRound) {
-        startGameBtn.addEventListener('click', startGame);  // Start game event listener
-        quitBtn.addEventListener('click', () => resetGame(true));  // Quit game event listener
-        playAgainBtn.addEventListener('click', () => resetGame(false));  // Play again event listener
-        cells.forEach((cell, index) => {  // Add click event listeners to each cell
-            cell.addEventListener('click', () => markPosition(index, cell));
+    // Initial game state and event listeners
+    function init() {
+        startGameBtn.addEventListener('click', startGame);
+        quitBtn.addEventListener('click', () => resetGame(true));
+        playAgainBtn.addEventListener('click', () => resetGame(false));
+        cells.forEach((cell, index) => {
+            cell.addEventListener('click', () => {
+                markPosition(index, cell); 
+                aiTurn(); 
+            });
         });
-        startPage.showModal();  // Display start modal
+        startPage.showModal();
     }
 
-    // Handle the marking of positions on the board
+    // Mark a position on board
     function markPosition(index, cell) {
-        if (board[index] != EMPTY_CELL) return;  // If cell is already marked, return
+        if (board[index] !== EMPTY_CELL) return;
+        board[index] = currentPlayer;
+        updateCellUI(cell, currentPlayer);
         
-        board[index] = currentPlayer;  // Update board with current player's symbol
-        updateCellUI(cell, currentPlayer);  // Update UI to reflect the move
+        let winner = checkWin(board);
+        if (winner) displayWinner(currentPlayer, false);
+        else if (checkDraw(board)) displayWinner(currentPlayer, true);
         
-        if (checkWin(index)) displayWinner(currentPlayer, false);  // Check if current player has won
-        else if (checkDraw()) displayWinner(currentPlayer, true);  // Check if game is a draw
-        
-        togglePlayer();  // Switch players
+        togglePlayer();
     }
 
-    // Update the UI with the player's symbol
+    // Update the cell's UI with the player's move
     function updateCellUI(cell, player) {
         cell.textContent = player;
         cell.classList.add(player);
     }
 
-    // Switch between players
+    // Toggle between players
     function togglePlayer() {
         currentPlayer = currentPlayer === PLAYER_X ? PLAYER_O : PLAYER_X;
     }
 
-    // Display the winner or a draw
+    // Display winner or draw
     function displayWinner(winner, isDraw) {
-        if(isDraw) {
+        if (isDraw) {
             roundOutcome.textContent = "IT'S A DRAW!";
         } else {
             spanElement.textContent = winner; 
@@ -80,37 +75,127 @@ const TicTacToe = (() => {
             roundOutcome.appendChild(spanElement);
             roundOutcome.appendChild(document.createTextNode(' TAKES THE ROUND!'));   
         }
-        endScreen.showModal();  // Show end screen modal
-    }
-    
-    // Check for a win based on the index
-    function checkWin(index) {
-        return toCheck[index].some((pattern) => 
-            board[pattern[0]] === currentPlayer && board[pattern[1]] === currentPlayer
-        ); 
+        endScreen.showModal();
     }
 
-    // Check if the game is a draw
-    function checkDraw() {
-        return board.every((i) => i != '');
+    // Check if there's a winner
+    function checkWin(board) {
+        for (const combination of WINNING_COMBINATIONS) {
+            const [a, b, c] = combination;
+            if (board[a] === board[b] && board[b] === board[c]) {
+                if(board[a] != EMPTY_CELL) return board[a];
+            }
+        }
+        return null;
+    }      
+
+    // Check draw
+    function checkDraw(board) {
+        return board.every(cell => cell !== EMPTY_CELL);
     }
 
-    // Start the game by closing the start modal and setting the initial player
+    // Check is board is empty 
+    function boardIsEmpty() {
+        return board.every(cell => cell === EMPTY_CELL);
+    }
+
+    // Start the game
     function startGame() {
         startPage.close(); 
-        currentPlayer = playerXInput.checked ? PLAYER_X : PLAYER_O;
+        if (!playerXInput.checked && boardIsEmpty()) aiTurn();
     }
 
-    // Reset the game state and optionally display the start modal
+    // Function to reset the game state
     function resetGame(toStartScreen) {
-        board = Array(9).fill(EMPTY_CELL);  // Reset board
-        cells.forEach((cell) => {
-            cell.textContent = EMPTY_CELL; 
+        board = Array(9).fill(EMPTY_CELL);
+        cells.forEach(cell => {
+            cell.textContent = EMPTY_CELL;
             cell.classList.remove(PLAYER_X, PLAYER_O);
         }); 
-        endScreen.close();  // Close end screen modal
-        if(toStartScreen) {
-            startPage.showModal();  // Show start modal if needed
-        } 
+        currentPlayer = PLAYER_X; 
+        endScreen.close();
+        if (!playerXInput.checked && boardIsEmpty()) aiTurn();
+
+        
+        if (toStartScreen) {
+            startPage.showModal();
+        }
     }
+
+    // Determine the AI's move
+    function aiTurn() {
+        let aiMove = currentPlayer === PLAYER_X? bestXMove() : bestOMove();
+        markPosition(aiMove, cells[aiMove]);
+    }
+
+    // Minimax algorithm to determine the best move for the current player
+    function minimax(board, depth, isMaximizing) {
+        const win = checkWin(board); 
+        if(win === PLAYER_X) return 1;
+        if(win === PLAYER_O) return -1; 
+        if(checkDraw(board)) return 0; 
+
+        if(isMaximizing) {
+            let maxEval = -Infinity; 
+            for(let i = 0; i < board.length; i++) {
+                if(board[i] === EMPTY_CELL) {
+                    board[i] = PLAYER_X; 
+                    let eval = minimax(board, depth + 1, false);
+                    board[i] = EMPTY_CELL; 
+                    maxEval = Math.max(maxEval, eval); 
+                }
+            }
+            return maxEval
+        } else {
+            let minEval = Infinity; 
+            for(let i = 0; i < board.length; i++) {
+                if(board[i] === EMPTY_CELL) {
+                    board[i] = PLAYER_O; 
+                    let eval = minimax(board, depth + 1, true);
+                    board[i] = EMPTY_CELL; 
+                    minEval = Math.min(minEval, eval);
+                }
+            }
+            return minEval; 
+        }
+    }
+
+    // Determines the best move for PLAYER_X
+    function bestXMove() {
+        let maxEval = -Infinity; 
+        let move; 
+        for(let i = 0; i < board.length; i++) {
+            if(board[i] === EMPTY_CELL) {
+                board[i] = PLAYER_X;
+                let eval = minimax(board, 0, false); 
+                board[i] = EMPTY_CELL; 
+                if(eval > maxEval) {
+                    maxEval = eval; 
+                    move = i; 
+                }
+            }
+        }
+        return move; 
+    }
+
+    // Determines the best move for PLAYER_O
+    function bestOMove() {
+        let minEval = Infinity; 
+        let move; 
+        for(let i = 0; i < board.length; i++) {
+            if(board[i] === EMPTY_CELL) {
+                board[i] = PLAYER_O;
+                let eval = minimax(board, 0, true); 
+                board[i] = EMPTY_CELL; 
+                if(eval < minEval) {
+                    minEval = eval; 
+                    move = i; 
+                }
+            }
+        }
+        return move; 
+    }
+
+    // Initialize the game 
+    init(); 
 })();
